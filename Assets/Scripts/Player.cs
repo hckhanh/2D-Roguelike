@@ -56,17 +56,16 @@ public class Player : MovingObject
 			if (myTouch.phase == TouchPhase.Began)
 				touchOrigin = myTouch.rawPosition;
 			else if (myTouch.phase == TouchPhase.Ended && touchOrigin.x >= 0) {
-				print("Ended!");
+				print ("Ended!");
 				Vector2 touchEnded = myTouch.position;
 				float x = touchOrigin.x - touchEnded.x;
 				float y = touchOrigin.y - touchEnded.y;
 
-				if (Mathf.Abs(x) > Mathf.Abs(y))
+				if (Mathf.Abs (x) > Mathf.Abs (y))
 					horizontal = x > 0 ? -1 : 1;
 				else
 					vertical = y > 0 ? -1 : 1;
 			}
-
 		}
 
 		#endif
@@ -94,7 +93,7 @@ public class Player : MovingObject
 
 	private void CheckIfGameOver ()
 	{
-		if (food < 0) {
+		if (food <= 0) {
 			GameManager.instance.GameOver ();
 			SoundManager.instance.PlaySingle (gameOverSound);
 			SoundManager.instance.musicSource.Stop ();
