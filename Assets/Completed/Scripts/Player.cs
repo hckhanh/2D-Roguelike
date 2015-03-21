@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.UI;	//Allows us to use UI.
+using UnityEngine.UI;//Allows us to use UI.
 
 namespace Completed
 {
@@ -22,14 +22,15 @@ namespace Completed
 		
 		private Animator animator;					//Used to store a reference to the Player's animator component.
 		private int food;							//Used to store player food points total during level.
-		//private Vector2 touchOrigin = -Vector2.one;	//Used to store location of screen touch origin for mobile controls.
-		
+		#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+		private Vector2 touchOrigin = -Vector2.one;	//Used to store location of screen touch origin for mobile controls.
+		#endif
 		
 		//Start overrides the Start function of MovingObject
 		protected override void Start ()
 		{
 			//Get a component reference to the Player's animator component
-			animator = GetComponent<Animator>();
+			animator = GetComponent<Animator> ();
 			
 			//Get the current food point total stored in GameManager.instance between levels.
 			food = GameManager.instance.playerFoodPoints;
@@ -49,11 +50,11 @@ namespace Completed
 			GameManager.instance.playerFoodPoints = food;
 		}
 		
-		
 		private void Update ()
 		{
 			//If it's not the player's turn, exit the function.
-			if(!GameManager.instance.playersTurn) return;
+			if (!GameManager.instance.playersTurn)
+				return;
 			
 			int horizontal = 0;  	//Used to store the horizontal move direction.
 			int vertical = 0;		//Used to store the vertical move direction.
@@ -115,8 +116,7 @@ namespace Completed
 			
 			#endif //End of mobile platform dependendent compilation section started above with #elif
 			//Check if we have a non-zero value for horizontal or vertical
-			if(horizontal != 0 || vertical != 0)
-			{
+			if (horizontal != 0 || vertical != 0) {
 				//Call AttemptMove passing in the generic parameter Wall, since that is what Player may interact with if they encounter one (by attacking it)
 				//Pass in horizontal and vertical as parameters to specify the direction to move Player in.
 				AttemptMove<Wall> (horizontal, vertical);
@@ -140,8 +140,7 @@ namespace Completed
 			RaycastHit2D hit;
 			
 			//If Move returns true, meaning Player was able to move into an empty space.
-			if (Move (xDir, yDir, out hit)) 
-			{
+			if (Move (xDir, yDir, out hit)) {
 				//Call RandomizeSfx of SoundManager to play the move sound, passing in two audio clips to choose from.
 				SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
 			}
@@ -173,8 +172,7 @@ namespace Completed
 		private void OnTriggerEnter2D (Collider2D other)
 		{
 			//Check if the tag of the trigger collided with is Exit.
-			if(other.tag == "Exit")
-			{
+			if (other.tag == "Exit") {
 				//Invoke the Restart function to start the next level with a delay of restartLevelDelay (default 1 second).
 				Invoke ("Restart", restartLevelDelay);
 				
@@ -183,8 +181,7 @@ namespace Completed
 			}
 			
 			//Check if the tag of the trigger collided with is Food.
-			else if(other.tag == "Food")
-			{
+			else if (other.tag == "Food") {
 				//Add pointsPerFood to the players current food total.
 				food += pointsPerFood;
 				
@@ -199,8 +196,7 @@ namespace Completed
 			}
 			
 			//Check if the tag of the trigger collided with is Soda.
-			else if(other.tag == "Soda")
-			{
+			else if (other.tag == "Soda") {
 				//Add pointsPerSoda to players food points total
 				food += pointsPerSoda;
 				
@@ -235,7 +231,7 @@ namespace Completed
 			food -= loss;
 			
 			//Update the food display with the new total.
-			foodText.text = "-"+ loss + " Food: " + food;
+			foodText.text = "-" + loss + " Food: " + food;
 			
 			//Check to see if game has ended.
 			CheckIfGameOver ();
@@ -246,13 +242,12 @@ namespace Completed
 		private void CheckIfGameOver ()
 		{
 			//Check if food point total is less than or equal to zero.
-			if (food <= 0) 
-			{
+			if (food <= 0) {
 				//Call the PlaySingle function of SoundManager and pass it the gameOverSound as the audio clip to play.
 				SoundManager.instance.PlaySingle (gameOverSound);
 				
 				//Stop the background music.
-				SoundManager.instance.musicSource.Stop();
+				SoundManager.instance.musicSource.Stop ();
 				
 				//Call the GameOver function of GameManager.
 				GameManager.instance.GameOver ();

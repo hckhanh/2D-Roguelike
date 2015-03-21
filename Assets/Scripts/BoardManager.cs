@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class BoardManager : MonoBehaviour
 {
-
 	[System.Serializable]
 	public class Count
 	{
@@ -31,6 +30,7 @@ public class BoardManager : MonoBehaviour
 
 	private Transform outerWallsHolder;
 	private Transform floorsHolder;
+	private Transform itemsHolder;
 	private List<Vector3> gridPositions = new List<Vector3> ();
 
 	void InitializeGrid ()
@@ -56,19 +56,21 @@ public class BoardManager : MonoBehaviour
 
 		// 1. Load outer walls
 		LoadOuterWalls ();
-
-		// 2. Load inner walls
-		LoadObjectAtRandom (wallTiles, wallCount.minimum, wallCount.maximum);
 		
-		// 3. Load floors
+		// 2. Load floors
 		LoadFloors (floorTiles);
 
+		itemsHolder = new GameObject ("Items").transform;
+
+		// 3. Load inner walls
+		LoadObjectAtRandom (wallTiles, wallCount.minimum, wallCount.maximum, itemsHolder);
+
 		// 4. Load food
-		LoadObjectAtRandom (foodTiles, food.minimum, food.maximum);
+		LoadObjectAtRandom (foodTiles, food.minimum, food.maximum, itemsHolder);
 
 		// 5. Load enemies
 		int enemyCount = (int)Mathf.Log (level, 2f);
-		LoadObjectAtRandom (enemyTiles, enemyCount, enemyCount);
+		LoadObjectAtRandom (enemyTiles, enemyCount, enemyCount, itemsHolder);
 
 		// 6. Load exit
 		Instantiate (exit, new Vector3 (rows - 1, columns - 1), Quaternion.identity);
@@ -84,20 +86,21 @@ public class BoardManager : MonoBehaviour
 		for (int i = 0; i < gridPositions.Count; i++) {
 			int randomObjectCount = Random.Range (0, floorTiles.Length);
 			GameObject instance = Instantiate (floorTiles [randomObjectCount], gridPositions [i], Quaternion.identity) as GameObject;
-			instance.transform.SetParent(floorsHolder);
+			instance.transform.SetParent (floorsHolder);
 		}
 
 		int randomObjectCount2 = Random.Range (0, floorTiles.Length);
 		GameObject instance2 = Instantiate (floorTiles [randomObjectCount2], Vector3.zero, Quaternion.identity) as GameObject;
-		instance2.transform.SetParent(floorsHolder);
+		instance2.transform.SetParent (floorsHolder);
 	}
 	
-	void LoadObjectAtRandom (GameObject[] objects, int min, int max)
+	void LoadObjectAtRandom (GameObject[] objects, int min, int max, Transform parent)
 	{
 		int randomObjectCount = Random.Range (min, max);
 		for (int i = 0; i < randomObjectCount; i++) {
 			int randomObjItem = Random.Range (0, objects.Length);
-			Instantiate (objects [randomObjItem], GetRandomPos (), Quaternion.identity);
+			GameObject item = Instantiate (objects [randomObjItem], GetRandomPos (), Quaternion.identity) as GameObject;
+			item.transform.SetParent(parent);
 		}
 	}
 
@@ -121,16 +124,5 @@ public class BoardManager : MonoBehaviour
 		int randomItemIndex = Random.Range (0, outerWallTiles.Length);
 		GameObject instance = Instantiate (outerWallTiles [randomItemIndex], location, Quaternion.identity) as GameObject;
 		instance.transform.SetParent (outerWallsHolder);
-	}
-
-	// Use this for initialization
-	void Start ()
-	{
-	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-	
 	}
 }
