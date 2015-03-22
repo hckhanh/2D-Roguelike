@@ -6,6 +6,7 @@ public class SoundManager : MonoBehaviour
 
 	public AudioSource efxSource;
 	public AudioSource musicSource;
+	public float delayBeforePlay;
 	public static SoundManager instance = null;
 	public float lowPitchRange = 0.95f;
 	public float highPitchRange = 1.05f;
@@ -18,6 +19,15 @@ public class SoundManager : MonoBehaviour
 		else if (instance != this)
 			Destroy (gameObject);
 		DontDestroyOnLoad (gameObject);
+
+		Invoke ("PlayBackgroundMusic", delayBeforePlay);
+	}
+
+	void PlayBackgroundMusic ()
+	{
+		if (!musicSource.isPlaying) {
+			musicSource.Play ();
+		}
 	}
 
 	public void PlaySingle (AudioClip clip)

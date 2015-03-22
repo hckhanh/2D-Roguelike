@@ -19,6 +19,7 @@ public class Player : MovingObject
 	public AudioClip drinkSound1;
 	public AudioClip drinkSound2;
 	public AudioClip gameOverSound;
+
 	#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 	private Vector2 touchOrigin = -Vector2.one;
 	#endif
@@ -41,7 +42,7 @@ public class Player : MovingObject
 		int horizontal = 0;
 		int vertical = 0;
 
-		#if UNITY_STANDALONE || UNITY_WEBPLAYER
+		#if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL
 
 		horizontal = (int)Input.GetAxisRaw ("Horizontal");
 		vertical = (int)Input.GetAxisRaw ("Vertical");
@@ -49,7 +50,7 @@ public class Player : MovingObject
 		if (horizontal != 0)
 			vertical = 0;
 
-		#else
+		#elif UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 
 		if (Input.touchCount > 0) {
 			Touch myTouch = Input.touches [0]; // Single touch game.
@@ -110,7 +111,6 @@ public class Player : MovingObject
 	void OnTriggerEnter2D (Collider2D other)
 	{
 		if (other.tag == "Exit") {
-			Invoke ("Restart", restartLevelDelay);
 			enabled = false;
 		} else if (other.tag == "Food") {
 			food += pointPerFood;
@@ -123,6 +123,12 @@ public class Player : MovingObject
 			foodText.text = string.Format ("+{0} Food: {1}", pointPerSoda, food);
 			SoundManager.instance.RandomizeSfx (drinkSound1, drinkSound2);
 		}
+	}
+
+	void OnDisable() // Save player food points after playing a level
+	{
+		GameManager.instance.playerFoodPoints = food;
+		Invoke ("Restart", restartLevelDelay);
 	}
 
 	public void LoseFood (int loss)
