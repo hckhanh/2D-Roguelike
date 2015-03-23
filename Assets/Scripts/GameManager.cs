@@ -5,12 +5,13 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-	public float levelStartDelay = 2f;						//Time to wait before starting level, in seconds.
-	public float turnDelay = 0.1f;							//Delay between each Player turn.
-	public int playerFoodPoints = 100;						//Starting value for Player food points.
+	public float levelStartDelay = 2f;
+	public float turnDelay = 0.1f;
 	public static GameManager instance = null;				//Static instance of GameManager which allows it to be accessed by any other script.
+	public int playerFoodPoints = 100;
+
 	[HideInInspector]
-	public bool playersTurn = true;		//Boolean to check if it's players turn, hidden in inspector but public.
+	public bool	playersTurn = true;		//Boolean to check if it's players turn, hidden in inspector but public.
 
 	private BoardManager boardManager;
 	private int level = 1;
@@ -24,13 +25,17 @@ public class GameManager : MonoBehaviour
 
 	void Awake ()
 	{
-		if (instance == null)
+		if (instance == null) {
 			instance = this;
-		else
+		} else {
 			Destroy (gameObject);
+		}
 		DontDestroyOnLoad (gameObject);
-		
+
 		enemies = new List<Enemy> ();
+
+		boardManager = GetComponent<BoardManager> ();
+
 		InitializeScene ();
 	}
 
@@ -58,7 +63,6 @@ public class GameManager : MonoBehaviour
 		Invoke ("HideLevelImage", levelStartDelay);
 
 		enemies.Clear ();
-		boardManager = GetComponent<BoardManager> ();
 		boardManager.SetupScene (level);
 	}
 

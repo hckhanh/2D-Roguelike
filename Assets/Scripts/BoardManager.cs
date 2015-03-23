@@ -21,6 +21,7 @@ public class BoardManager : MonoBehaviour
 	public int rows = 8;
 	public Count wallCount = new Count (5, 9);
 	public Count food = new Count (1, 5);
+	//public GameObject player;
 	public GameObject exit;
 	public GameObject[] outerWallTiles;
 	public GameObject[] wallTiles;
@@ -76,6 +77,7 @@ public class BoardManager : MonoBehaviour
 		Instantiate (exit, new Vector3 (rows - 1, columns - 1), Quaternion.identity);
 
 		// 7. Load player.
+
 
 		gridPositions.Clear ();
 	}

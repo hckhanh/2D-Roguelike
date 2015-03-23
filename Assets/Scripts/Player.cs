@@ -10,8 +10,6 @@ public class Player : MovingObject
 	public int pointPerSoda = 20;
 	public float restartLevelDelay = 1;
 	public Text foodText;
-	private Animator animator;
-	private int food;
 	public AudioClip moveSound1;
 	public AudioClip moveSound2;
 	public AudioClip eatSound1;
@@ -19,6 +17,9 @@ public class Player : MovingObject
 	public AudioClip drinkSound1;
 	public AudioClip drinkSound2;
 	public AudioClip gameOverSound;
+
+	private Animator animator;
+	private int food;
 
 	#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 	private Vector2 touchOrigin = -Vector2.one;
@@ -125,7 +126,7 @@ public class Player : MovingObject
 		}
 	}
 
-	void OnDisable() // Save player food points after playing a level
+	void OnDisable () // Save player food points after playing a level
 	{
 		GameManager.instance.playerFoodPoints = food;
 		Invoke ("Restart", restartLevelDelay);
